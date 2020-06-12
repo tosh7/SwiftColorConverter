@@ -1,0 +1,2 @@
+# SwiftColorConverter
+XDのプラグイン。オブジェクトのカラーコードをSwiftに変化させます。
