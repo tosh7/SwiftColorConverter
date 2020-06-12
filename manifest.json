@@ -1,0 +1,17 @@
+{
+    "name": "SwiftColorConverter",
+    "id": "TOSH_SWIFT_COLOR_CONVERTER",
+    "version": "1.0.0",
+    "description": "オブジェクトのカラーコードをSwift化します",
+    "host":{
+        "app": "XD",
+        "minVersion":"13.0.0"
+    },
+    "uiEntryPoints":[
+        {
+          "type":"menu",
+          "label":"swiftColorConverter",
+          "commandId":"swiftColorConverter"
+        }
+    ]
+}
