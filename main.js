@@ -10,7 +10,10 @@ function swiftColorConverter(selection) {
             if(item !== null) {
                 //カラーコードを16進数で取得する
                 let colorInfo = item.fill.value.toString(16);
-                console.log(colorInfo);
+                let colorName = colorInfo.slice(2) + 'Color';
+                let colorCode = '0x' + colorInfo.slice(2);
+                console.log(colorName);
+                console.log(colorCode);
             } else {
                 console.log("このオブジェクトから色は取得できませんでした");
             }
