@@ -32,12 +32,12 @@ async function swiftColorConverter(selection) {
 function swiftConvertModel(colorName, colorCode) {
     let swiftText = 'import UIKit\n\nextension UIColor {\n    public enum Name: String {\n';
     //ここは複数回呼ばれる前提
-    for(let i = 0;i < colorName.length; i++)
+    for(let i = 0; ci < colorName.length; i++)
         swiftText += '        case ' + colorName[i] + '\n'
     swiftText += '    }\n\n'
     swiftText += '    public convenience init(name: Name) {\n        switch name {\n'
     //ここは複数回呼ばれる前提
-    for(let i = 0;i < colorName.length; i++)
+    for(let i = 0; i < colorName.length; i++)
         swiftText += '        case .' + colorName[i] + ':\n            self.init(hex: ' + colorCode[i] + ')\n'
     swiftText += '        }\n    }\n'
     swiftText += '}'
