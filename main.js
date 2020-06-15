@@ -20,6 +20,7 @@ async function swiftColorConverter(selection) {
             colorCode.push('0x' + colorInfo.slice(2));
         } else {
             console.log("このオブジェクトから色は取得できませんでした");
+            // console.log(item);
         }
     })
 
@@ -32,7 +33,7 @@ async function swiftColorConverter(selection) {
 function swiftConvertModel(colorName, colorCode) {
     let swiftText = 'import UIKit\n\nextension UIColor {\n    public enum Name: String {\n';
     //ここは複数回呼ばれる前提
-    for(let i = 0; ci < colorName.length; i++)
+    for(let i = 0; i < colorName.length; i++)
         swiftText += '        case ' + colorName[i] + '\n'
     swiftText += '    }\n\n'
     swiftText += '    public convenience init(name: Name) {\n        switch name {\n'
