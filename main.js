@@ -25,15 +25,17 @@ async function swiftColorConverter(selection) {
 
     //フォルダの書き出し  
     const userFolder = await fs.getFolder();
-    const newFile = await userFolder.createEntry("examples.swift", {overwrite: true});
+    const newFile = await userFolder.createEntry("UIColor+extension.swift", {overwrite: true});
     newFile.write(swiftConvertModel(colorName, colorCode));
 }
 
 function swiftConvertModel(colorName, colorCode) {
     var swiftText = 'import UIKit\n\nextension UIColor {\n    public enum Name: String {\n';
+    //ここは複数回呼ばれる前提
     swiftText += '        case ' + colorName + '\n'
     swiftText += '    }\n\n'
     swiftText += '    public convenience init(name: Name) {\n        switch name {\n'
+    //ここは複数回呼ばれる前提
     swiftText += '        case .' + colorName + ':\n            self.init(hex: ' + colorCode + ')\n'
     swiftText += '        }\n    }\n'
     swiftText += '}'
