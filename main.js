@@ -4,34 +4,40 @@ async function swiftColorConverter(selection) {
     //選択中のアイテム
     const items = selection.items;
 
-    //要素を一つだけ選択していた場合
-    if(items.length >= 1) {
-        items.forEach(item => {
-            //オブジェクトが塗りつぶされていない場合は無効化
-            if(item !== null) {
-                //カラーコードを16進数で取得する
-                let colorInfo = item.fill.value.toString(16);
-                let colorName = colorInfo.slice(2) + 'Color';
-                let colorCode = '0x' + colorInfo.slice(2);
-                console.log(colorName);
-                console.log(colorCode);
-            } else {
-                console.log("このオブジェクトから色は取得できませんでした");
-            }
-        })
-    } else if(items.length > 1) {
-        console.log("複数のオブジェクトが選択されています");
-    } else {
+    if(items.length === 0) {
         console.log("オブジェクトが選択されていません");
+        return;
     }
-    
-    const userFolder = await fs.getFolder();  // folder picker
+
+    let colorName;
+    let colorCode;
+    items.forEach(item => {
+        //オブジェクトが塗りつぶされていない場合は無効化
+        if(item !== null) {
+            //カラーコードを16進数で取得する
+            let colorInfo = item.fill.value.toString(16);
+            colorName = colorInfo.slice(2) + 'Color';
+            colorCode = '0x' + colorInfo.slice(2);
+        } else {
+            console.log("このオブジェクトから色は取得できませんでした");
+        }
+    })
+
+    //フォルダの書き出し  
+    const userFolder = await fs.getFolder();
     const newFile = await userFolder.createEntry("examples.swift", {overwrite: true});
-    newFile.write(swiftConvertModel());
+    newFile.write(swiftConvertModel(colorName, colorCode));
 }
 
-function swiftConvertModel() {
-    return "import UIKit\n\nextension UIColor {\n\n}";
+function swiftConvertModel(colorName, colorCode) {
+    var swiftText = 'import UIKit\n\nextension UIColor {\n    public enum Name: String {\n';
+    swiftText += '        case ' + colorName + '\n'
+    swiftText += '    }\n\n'
+    swiftText += '    public convenience init(name: Name) {\n        switch name {\n'
+    swiftText += '        case .' + colorName + ':\n            self.init(hex: ' + colorCode + ')\n'
+    swiftText += '        }\n    }\n'
+    swiftText += '}'
+    return swiftText;
 }
 
 module.exports = {
