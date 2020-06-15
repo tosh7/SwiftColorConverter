@@ -12,8 +12,8 @@ async function swiftColorConverter(selection) {
     let colorName = [];
     let colorCode = [];
     items.forEach(item => {
-        //オブジェクトが塗りつぶされていない場合は無効化
-        if(item !== null) {
+        //オブジェクトが円ではない場合、色を取得しない
+        if(item.constructor.name === "Ellipse") {
             //カラーコードを16進数で取得する
             let colorInfo = item.fill.value.toString(16);
             colorName.push(colorInfo.slice(2) + 'Color');
