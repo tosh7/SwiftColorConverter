@@ -30,7 +30,7 @@ async function swiftColorConverter(selection) {
 }
 
 function swiftConvertModel(colorName, colorCode) {
-    var swiftText = 'import UIKit\n\nextension UIColor {\n    public enum Name: String {\n';
+    let swiftText = 'import UIKit\n\nextension UIColor {\n    public enum Name: String {\n';
     //ここは複数回呼ばれる前提
     swiftText += '        case ' + colorName + '\n'
     swiftText += '    }\n\n'
