@@ -9,15 +9,15 @@ async function swiftColorConverter(selection) {
         return;
     }
 
-    let colorName;
-    let colorCode;
+    let colorName = [];
+    let colorCode = [];
     items.forEach(item => {
         //オブジェクトが塗りつぶされていない場合は無効化
         if(item !== null) {
             //カラーコードを16進数で取得する
             let colorInfo = item.fill.value.toString(16);
-            colorName = colorInfo.slice(2) + 'Color';
-            colorCode = '0x' + colorInfo.slice(2);
+            colorName.push(colorInfo.slice(2) + 'Color');
+            colorCode.push('0x' + colorInfo.slice(2));
         } else {
             console.log("このオブジェクトから色は取得できませんでした");
         }
@@ -32,11 +32,13 @@ async function swiftColorConverter(selection) {
 function swiftConvertModel(colorName, colorCode) {
     let swiftText = 'import UIKit\n\nextension UIColor {\n    public enum Name: String {\n';
     //ここは複数回呼ばれる前提
-    swiftText += '        case ' + colorName + '\n'
+    for(let i = 0;i < colorName.length; i++)
+        swiftText += '        case ' + colorName[i] + '\n'
     swiftText += '    }\n\n'
     swiftText += '    public convenience init(name: Name) {\n        switch name {\n'
     //ここは複数回呼ばれる前提
-    swiftText += '        case .' + colorName + ':\n            self.init(hex: ' + colorCode + ')\n'
+    for(let i = 0;i < colorName.length; i++)
+        swiftText += '        case .' + colorName[i] + ':\n            self.init(hex: ' + colorCode[i] + ')\n'
     swiftText += '        }\n    }\n'
     swiftText += '}'
     return swiftText;
