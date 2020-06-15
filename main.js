@@ -1,10 +1,11 @@
+const fs = require("uxp").storage.localFileSystem;
 
-function swiftColorConverter(selection) {
+async function swiftColorConverter(selection) {
     //選択中のアイテム
     const items = selection.items;
 
     //要素を一つだけ選択していた場合
-    if(items.length === 1) {
+    if(items.length >= 1) {
         items.forEach(item => {
             //オブジェクトが塗りつぶされていない場合は無効化
             if(item !== null) {
@@ -23,6 +24,14 @@ function swiftColorConverter(selection) {
     } else {
         console.log("オブジェクトが選択されていません");
     }
+    
+    const userFolder = await fs.getFolder();  // folder picker
+    const newFile = await userFolder.createEntry("examples.swift", {overwrite: true});
+    newFile.write(swiftConvertModel());
+}
+
+function swiftConvertModel() {
+    return "import UIKit\n\nextension UIColor {\n\n}";
 }
 
 module.exports = {
