@@ -9,37 +9,40 @@ async function swiftColorConverter(selection) {
         return;
     }
 
-    let colorName = [];
-    let colorCode = [];
+    let colorArray = [];
     items.forEach(item => {
         //オブジェクトが円ではない場合、色を取得しない
         if(item.constructor.name === "Ellipse") {
-            //カラーコードを16進数で取得する
-            let colorInfo = item.fill.value.toString(16);
-            colorName.push(colorInfo.slice(2) + 'Color');
-            colorCode.push('0x' + colorInfo.slice(2));
+            colorArray.push(item.fill);
         } else {
             console.log("このオブジェクトから色は取得できませんでした");
-            // console.log(item);
         }
     })
 
     //フォルダの書き出し  
     const userFolder = await fs.getFolder();
     const newFile = await userFolder.createEntry("UIColor+extension.swift", {overwrite: true});
-    newFile.write(swiftConvertModel(colorName, colorCode));
+    newFile.write(swiftConvertModel(colorArray));
 }
 
-function swiftConvertModel(colorName, colorCode) {
+function swiftConvertModel(colorArray) {
     let swiftText = 'import UIKit\n\nextension UIColor {\n    public enum Name: String {\n';
-    //ここは複数回呼ばれる前提
-    for(let i = 0; i < colorName.length; i++)
-        swiftText += '        case ' + colorName[i] + '\n'
+    for(let i = 0; i < colorArray.length; i++) {
+        const colorName = colorArray[i].value.toString(16) + 'Color';
+        swiftText += '        case ' + colorName + '\n'
+    }
     swiftText += '    }\n\n'
     swiftText += '    public convenience init(name: Name) {\n        switch name {\n'
-    //ここは複数回呼ばれる前提
-    for(let i = 0; i < colorName.length; i++)
-        swiftText += '        case .' + colorName[i] + ':\n            self.init(hex: ' + colorCode[i] + ')\n'
+    for(let i = 0; i < colorArray.length; i++) {
+        //カラーコードを16進数、RGBへと変換
+        const colorName = colorArray[i].value.toString(16) + 'Color';
+        const colorCode = '0x' + colorArray[i].value.toString(16).slice(2);
+        const red = (colorArray[i].r / 255).toFixed(10);
+        const green = (colorArray[i].g / 255).toFixed(10);
+        const blue = (colorArray[i].b / 255).toFixed(10);
+        swiftText += '        case .' + colorName + ':\n            self.init(hex: ' + colorCode + ')'
+        swiftText += ' //#colorLiteral(red: ' + red + ', green: ' + green + ', blue: ' + blue + ', alpha: 1)\n'
+    }
     swiftText += '        }\n    }\n'
     swiftText += '}'
     return swiftText;
