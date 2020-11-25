@@ -17,8 +17,10 @@ async function swiftColorConverter() {
 
     //フォルダの書き出し  
     const userFolder = await fs.getFolder();
-    const newFile = await userFolder.createEntry("UIColor+extension.swift", {overwrite: true});
-    newFile.write(swiftConvertModel(colorArray));
+    // const swiftFile = await userFolder.createEntry("UIColor+extension.swift", {overwrite: true});
+    // swiftFile.write(swiftConvertModel(colorArray));
+
+    xcassetsConvertModel(colorArray, fs);
 }
 
 function swiftConvertModel(colorArray) {
@@ -42,6 +44,45 @@ function swiftConvertModel(colorArray) {
     swiftText += '        }\n    }\n'
     swiftText += '}'
     return swiftText;
+}
+
+async function xcassetsConvertModel(colorArray, fileSystem) {
+    const userFolder = await fileSystem.getFolder;
+    const xcassetsFolder = await userFolder.createEntry("Colors.xcassets", {overwrite: true});
+
+    for(let i = 0; i < colorArray.length; i++) {
+        //カラーコードを16進数、RGBへと変換
+        const colorName = colorArray[i].name;
+        const red = (colorArray[i].color.r / 255).toFixed(10);
+        const green = (colorArray[i].color.g / 255).toFixed(10);
+        const blue = (colorArray[i].color.b / 255).toFixed(10);
+
+        const colorSet = await xcassetsFolder.createEntry(colorName + ".colorset", {overwrite: true});
+        
+        let json = {
+            "colors" : [
+              {
+                "idiom" : "universal",
+                "color" : {
+                  "components" : {
+                    "red" : red,
+                    "alpha" : "1.000",
+                    "blue" : blue,
+                    "green" : green
+                  },
+                  "color-space" : "srgb"
+                }
+              }
+            ],
+            "info" : {
+              "version" : 1,
+              "author" : "xcode"
+            }
+          }
+
+        const contensJson = await colorSet.createEntry("Contents.json", {overwrite: true});
+        contensJson.write(json);
+    }
 }
 
 module.exports = {
