@@ -82,6 +82,7 @@ function swiftConvertModel(colorArray) {
     return swiftText;
 }
 
+// 現在はSwiftConverterにベタ書きしているので、これは呼び出していない。
 async function xcassetsConvertModel(colorArray) {
     const userFolder = await fs.getFolder;
     const xcassetsFolder = await userFolder.createFolder("Colors.xcassets");
