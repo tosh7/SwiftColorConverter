@@ -17,10 +17,46 @@ async function swiftColorConverter() {
 
     //フォルダの書き出し  
     const userFolder = await fs.getFolder();
-    // const swiftFile = await userFolder.createEntry("UIColor+extension.swift", {overwrite: true});
-    // swiftFile.write(swiftConvertModel(colorArray));
+    const swiftFile = await userFolder.createEntry("UIColor+extension.swift", {overwrite: true});
+    swiftFile.write(swiftConvertModel(colorArray));
 
-    xcassetsConvertModel(colorArray, fs);
+    // メソッド呼び出しがあまりうまくいかないので、ここにベタガキする
+    // xcassetsConvertModel(colorArray);
+    const xcassetsFolder = await userFolder.createFolder("Colors.xcassets");
+
+    for(let i = 0; i < colorArray.length; i++) {
+        //カラーコードを16進数、RGBへと変換
+        const colorName = colorArray[i].name;
+        const red = (colorArray[i].color.r / 255).toFixed(10);
+        const green = (colorArray[i].color.g / 255).toFixed(10);
+        const blue = (colorArray[i].color.b / 255).toFixed(10);
+
+        const colorSet = await xcassetsFolder.createFolder(colorName + ".colorset");
+        
+        let json = {
+            "colors" : [
+              {
+                "idiom" : "universal",
+                "color" : {
+                  "components" : {
+                    "red" : red,
+                    "green" : green,
+                    "blue" : blue,
+                    "alpha" : "1.000"
+                  },
+                  "color-space" : "srgb"
+                }
+              }
+            ],
+            "info" : {
+              "version" : 1,
+              "author" : "xcode"
+            }
+          }
+
+        const contensJson = await colorSet.createEntry("Contents.json", {overwrite: true});
+        contensJson.write(JSON.stringify(json, null , "\t"));
+    }
 }
 
 function swiftConvertModel(colorArray) {
@@ -46,9 +82,9 @@ function swiftConvertModel(colorArray) {
     return swiftText;
 }
 
-async function xcassetsConvertModel(colorArray, fileSystem) {
-    const userFolder = await fileSystem.getFolder;
-    const xcassetsFolder = await userFolder.createEntry("Colors.xcassets", {overwrite: true});
+async function xcassetsConvertModel(colorArray) {
+    const userFolder = await fs.getFolder;
+    const xcassetsFolder = await userFolder.createFolder("Colors.xcassets");
 
     for(let i = 0; i < colorArray.length; i++) {
         //カラーコードを16進数、RGBへと変換
@@ -57,7 +93,7 @@ async function xcassetsConvertModel(colorArray, fileSystem) {
         const green = (colorArray[i].color.g / 255).toFixed(10);
         const blue = (colorArray[i].color.b / 255).toFixed(10);
 
-        const colorSet = await xcassetsFolder.createEntry(colorName + ".colorset", {overwrite: true});
+        const colorSet = await xcassetsFolder.createFolder(colorName + ".colorset");
         
         let json = {
             "colors" : [
