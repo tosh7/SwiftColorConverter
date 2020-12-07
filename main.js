@@ -27,9 +27,9 @@ async function swiftColorConverter() {
     for(let i = 0; i < colorArray.length; i++) {
         //カラーコードを16進数、RGBへと変換
         const colorName = colorArray[i].name;
-        const red = (colorArray[i].color.r / 255).toFixed(10);
-        const green = (colorArray[i].color.g / 255).toFixed(10);
-        const blue = (colorArray[i].color.b / 255).toFixed(10);
+        const red = "0x" + colorArray[i].color.value.toString(16).slice(2,4);
+        const green = "0x" + colorArray[i].color.value.toString(16).slice(4,6);
+        const blue = "0x" + colorArray[i].color.value.toString(16).slice(6,8);
 
         const colorSet = await xcassetsFolder.createFolder(colorName + ".colorset");
         
@@ -90,9 +90,9 @@ async function xcassetsConvertModel(colorArray) {
     for(let i = 0; i < colorArray.length; i++) {
         //カラーコードを16進数、RGBへと変換
         const colorName = colorArray[i].name;
-        const red = (colorArray[i].color.r / 255).toFixed(10);
-        const green = (colorArray[i].color.g / 255).toFixed(10);
-        const blue = (colorArray[i].color.b / 255).toFixed(10);
+        const red = "0x" + colorArray[i].color.r;
+        const green = "0x" + colorArray[i].color.g;
+        const blue = "0x" + colorArray[i].color.b;
 
         const colorSet = await xcassetsFolder.createFolder(colorName + ".colorset");
         
