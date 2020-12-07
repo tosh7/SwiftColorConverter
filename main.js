@@ -17,7 +17,7 @@ async function swiftColorConverter() {
 
     //フォルダの書き出し  
     const userFolder = await fs.getFolder();
-    const swiftFile = await userFolder.createEntry("UIColor+extension.swift", {overwrite: true});
+    const swiftFile = await userFolder.createEntry("UIColor+NewName.swift", {overwrite: true});
     swiftFile.write(swiftConvertModel(colorArray));
 
     // メソッド呼び出しがあまりうまくいかないので、ここにベタガキする
@@ -60,13 +60,13 @@ async function swiftColorConverter() {
 }
 
 function swiftConvertModel(colorArray) {
-    let swiftText = 'import UIKit\n\nextension UIColor {\n    public enum Name: String {\n';
+    let swiftText = '// このファイルは自動生成されるものなので、ReadOnly\nimport UIKit\n\nextension UIColor {\n    public enum NewName: String {\n';
     for(let i = 0; i < colorArray.length; i++) {
         const colorName = colorArray[i].name;
         swiftText += '        case ' + colorName + '\n'
     }
     swiftText += '    }\n\n'
-    swiftText += '    public convenience init(name: Name) {\n        switch name {\n'
+    swiftText += '    public convenience init(name: NewName) {\n        switch name {\n'
     for(let i = 0; i < colorArray.length; i++) {
         //カラーコードを16進数、RGBへと変換
         const colorName = colorArray[i].name;
