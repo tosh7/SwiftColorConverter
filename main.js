@@ -75,10 +75,10 @@ function swiftConvertModel(colorArray) {
         const green = (colorArray[i].color.g / 255).toFixed(10);
         const blue = (colorArray[i].color.b / 255).toFixed(10);
         swiftText += '        case .' + colorName + ':\n            self.init(hex: ' + colorCode + ')'
-        swiftText += ' //#colorLiteral(red: ' + red + ', green: ' + green + ', blue: ' + blue + ', alpha: 1)\n'
+        swiftText += ' // #colorLiteral(red: ' + red + ', green: ' + green + ', blue: ' + blue + ', alpha: 1)\n'
     }
     swiftText += '        }\n    }\n'
-    swiftText += '}'
+    swiftText += '}\n'
     return swiftText;
 }
 
